@@ -5,12 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Modelo Base Three - Datacenter 3D</title>
   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&display=swap");
+    :root {
+      --senai-red: #e30613;
+      --bg: #f5f7fb;
+      --text: #0f172a;
+      --muted: #4b5563;
+      --panel: rgba(255, 255, 255, 0.92);
+    }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f3f5f9;
-      color: #111827;
+      font-family: "Barlow", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 10% 20%, rgba(227, 6, 19, 0.08), transparent 40%), var(--bg);
+      color: var(--text);
       overflow: hidden;
     }
     #status {
@@ -21,10 +29,11 @@
       background: rgba(0, 0, 0, 0.08);
       border-radius: 8px;
       color: #0f172a;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 12px;
       z-index: 20;
       backdrop-filter: blur(8px);
+      letter-spacing: 0.02em;
     }
     header {
       position: fixed;
@@ -35,7 +44,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 12px 18px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(243, 245, 249, 0.72) 100%);
+      background: linear-gradient(180deg, var(--panel) 0%, rgba(245, 247, 251, 0.72) 100%);
       backdrop-filter: blur(8px);
       z-index: 10;
       border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -43,12 +52,14 @@
     header h1 {
       margin: 0;
       font-size: 18px;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.05em;
+      font-weight: 700;
     }
     header a {
-      color: #0f8ed7;
+      color: var(--senai-red);
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
     #scene {
       width: 100vw;
@@ -61,7 +72,7 @@
       height: 100%;
       display: block;
     }
-</style>
+  </style>
 <script type="importmap">
 {
   "imports": {
@@ -103,6 +114,7 @@
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
+    renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -112,10 +124,28 @@
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0xcfd5e3, 1.2);
     scene.add(hemiLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.15);
     dirLight.position.set(6, 10, 8);
     dirLight.castShadow = true;
+    dirLight.shadow.mapSize.set(2048, 2048);
     scene.add(dirLight);
+
+    const floorMat = new THREE.MeshStandardMaterial({
+      color: 0xf8fafc,
+      roughness: 0.94,
+      metalness: 0.02
+    });
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -0.01;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    const grid = new THREE.GridHelper(30, 30, 0xd1d5db, 0xe5e7eb);
+    grid.material.opacity = 0.6;
+    grid.material.transparent = true;
+    grid.position.y = floor.position.y + 0.002;
+    scene.add(grid);
 
     const loader = new GLTFLoader();
     loader.load(
@@ -126,7 +156,7 @@
           if (child.isMesh) child.castShadow = child.receiveShadow = true;
         });
         scene.add(model);
-        frameObject(model);
+        frameObject(model, floor, grid);
         statusEl.textContent = "Modelo carregado";
         setTimeout(() => statusEl.remove(), 1200);
       },
@@ -146,7 +176,7 @@
       }
     );
 
-    function frameObject(object) {
+    function frameObject(object, floor, grid) {
       const box = new THREE.Box3().setFromObject(object);
       const size = box.getSize(new THREE.Vector3());
       const center = box.getCenter(new THREE.Vector3());
@@ -164,6 +194,10 @@
       camera.position.copy(center).add(direction);
       controls.target.copy(center);
       controls.update();
+
+      const floorY = box.min.y - 0.01;
+      floor.position.y = floorY;
+      grid.position.y = floorY + 0.002;
     }
 
     function onResize() {

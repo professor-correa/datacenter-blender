@@ -5,18 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PILOTO - DATACENTER 3D</title>
   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&display=swap");
     :root {
-      --bg: #0f1116;
-      --card: #171b23;
-      --accent: #3abff8;
-      --text: #e8ecf5;
-      --muted: #9aa3b5;
+      --senai-red: #e30613;
+      --senai-dark: #1d1f23;
+      --senai-gray: #f2f4f7;
+      --text: #111827;
+      --muted: #4b5563;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at 20% 20%, #1c2230, #0f1116 45%), radial-gradient(circle at 80% 0%, #1e2634, transparent 40%), var(--bg);
+      font-family: "Barlow", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 15% 20%, rgba(227, 6, 19, 0.12), transparent 40%), radial-gradient(circle at 80% 10%, rgba(0, 0, 0, 0.08), transparent 40%), var(--senai-gray);
       color: var(--text);
       min-height: 100vh;
       display: flex;
@@ -26,18 +27,19 @@
     }
     .card {
       width: min(960px, 100%);
-      background: linear-gradient(145deg, #1b202c, #141923);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.12);
       border-radius: 16px;
       padding: 40px 48px;
       display: grid;
-      gap: 32px;
+      gap: 28px;
     }
     h1 {
       margin: 0;
-      font-size: clamp(28px, 3vw, 36px);
+      font-size: clamp(30px, 3vw, 38px);
       letter-spacing: 0.04em;
+      color: var(--senai-dark);
     }
     p {
       margin: 0;
@@ -55,29 +57,30 @@
       color: inherit;
     }
     .button {
-      padding: 16px 18px;
+      padding: 18px 20px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: var(--card);
+      border: 1px solid rgba(0, 0, 0, 0.07);
+      background: linear-gradient(135deg, #ffffff, #f7f8fb);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
     }
     .button:hover {
       transform: translateY(-2px);
-      border-color: rgba(58, 191, 248, 0.4);
-      box-shadow: 0 10px 30px rgba(58, 191, 248, 0.12);
+      border-color: rgba(227, 6, 19, 0.35);
+      box-shadow: 0 12px 30px rgba(227, 6, 19, 0.18);
     }
     .button span {
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
     .badge {
       padding: 6px 10px;
       border-radius: 999px;
-      background: rgba(58, 191, 248, 0.16);
-      color: var(--accent);
+      background: rgba(227, 6, 19, 0.12);
+      color: var(--senai-red);
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.05em;
